@@ -2,7 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
+use App\Http\Controllers\Clientcontroller;
+use App\Http\Controllers\Studentcontroller;
 Route::get("form1",[MyController::class,'info']);
+
+Route::post('insertclient', [Clientcontroller::class,'store'])->name('insertclient');
+Route::get('clientForm', [Clientcontroller::class, 'create']);
+
+Route::post('insertstudent', [Studentcontroller::class,'store'])->name('insertstudent');
+Route::get('studentForm', [Studentcontroller::class, 'create']);
+
 Route::get('/', function () {
     return view('welcome');
 });
