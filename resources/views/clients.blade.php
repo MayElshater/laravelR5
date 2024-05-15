@@ -14,6 +14,12 @@
 @include('include.nav')
 <div class="container">
   <h2>Clients Data</h2>
+  <!-- Display Success Message -->
+  @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+  @endif
   <table class="table table-hover">
     <thead>
       <tr>
@@ -21,6 +27,9 @@
         <th>Phone</th>
         <th>Email</th>
         <th>Website</th>
+        <th>Edit</th>
+        <th>Show</th>
+        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +40,21 @@
         <td>{{$client->phone}}</td>
         <td>{{$client->email}}</td>
         <td>{{$client->website}}</td>
+        <td><a href="{{route('editClient',$client->id)}}">Edit</td>
+        <td><a href="{{route('showClient',$client->id)}}">Show</td>
+        <td>
+        <form id="delete-form-{{$client->id}}" action="{{ route('deleteClient', $client->id) }}" method="POST" style="display: none;">
+            <input type="hidden" value="{{$client->id}}" name="id">
+          
+            @csrf
+             @method('DELETE')
+        </form>
+          <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this client? This action cannot be undone.')) { document.getElementById('delete-form-{{$client->id}}').submit(); }">
+            Delete
+          </a>
+       </td>
+
+
       </tr>
        @endforeach
     </tbody>

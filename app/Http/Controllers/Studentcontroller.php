@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Studentcontroller extends Controller
 { 
@@ -17,8 +18,8 @@ class Studentcontroller extends Controller
     public function index()
     {
         //
-        $students= Student::get();
-        return view('students',compact('students'));
+        $students= DB::table('students')->get();
+        return view('students',['students'=>$students]);
     }
 
     /**
@@ -43,7 +44,12 @@ class Studentcontroller extends Controller
         
         $student->save();
         return 'Inserted';*/
+        /*
         Student::create($request->only($this->columns));
+        return redirect('students');*/
+        $student = DB::table('students')->insertGetId([
+            'studentname' => $request->studentname,
+            'age' => $request->age]);
         return redirect('students');
     }
 
@@ -53,6 +59,17 @@ class Studentcontroller extends Controller
     public function show(string $id)
     {
         //
+        // Retrieve the student record based on the provided ID
+       $student = DB::table('students')->where('id', $id)->first();
+
+    // Check if the student is found
+      if ($student) {
+        // If the student is found, pass it to the view
+        return view('showStudent', ['student' => $student]);
+    } else {
+        // If the student is not found, return an error message or redirect
+        return "Student not found";
+    }
     }
 
     /**
@@ -61,6 +78,16 @@ class Studentcontroller extends Controller
     public function edit(string $id)
     {
         //
+        $student = DB::table('students')->where('id', $id)->first();
+
+    // Check if the student is found
+      if ($student) {
+        // If the student is found, pass it to the view
+        return view('editStudent', ['student' => $student]);
+    } else {
+        // If the student is not found, return an error message or redirect
+        return "Student not found";
+    }
     }
 
     /**
@@ -69,6 +96,21 @@ class Studentcontroller extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $student = DB::table('students')->where('id', $id)->first();
+
+    // Check if the student is found
+      if (!$student) {
+        // If the student is found, pass it to the view
+        return redirect()->back()->with('error', 'Client not found.');
+    } else {
+        // If the student is not found, return an error message or redirect
+        $student = DB::table('students')
+        ->where('id', $id)
+        ->update([
+            'studentname' => $request->studentname,
+            'age' => $request->age]);
+        return redirect('students')->with('success', 'Client updated successfully.');
+    }
     }
 
     /**
@@ -77,5 +119,17 @@ class Studentcontroller extends Controller
     public function destroy(string $id)
     {
         //
+        $student = DB::table('students')->where('id', $id)->first();
+
+    // If client with given ID is not found, handle the case
+    if (!$student) {
+        return redirect()->back()->with('error', 'Student not found.');
+    }
+
+    // Delete the client
+    DB::table('students')->where('id', $id)->delete();
+
+    // Redirect to clients index page with success message
+    return redirect('students')->with('success', 'Student deleted successfully.');
     }
 }

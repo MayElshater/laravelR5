@@ -52,14 +52,22 @@ class Clientcontroller extends Controller
     public function show(string $id)
     {
         //
+        $client = Client::find($id);
+
+    // Return the edit view with the client data
+         return view('showClient', compact('client'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id )
     {
-        //
+        // Fetch the client with the given ID
+         $client = Client::find($id);
+
+    // Return the edit view with the client data
+         return view('editClient', compact('client'));
     }
 
     /**
@@ -68,13 +76,41 @@ class Clientcontroller extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $client = Client::find($id);
+    
+        if (!$client) {
+        // Handle case where client with given ID is not found
+        // For example, redirect back with an error message
+              return redirect()->back()->with('error', 'Client not found.');
+        }
+         
+         // Update client attributes
+        $client->update($request->only($this->columns));
+
+        // Redirect to clients index page or any other desired destination
+        return redirect('clients')->with('success', 'Client updated successfully.');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(Request $request)
+{
+    // Find the client by ID
+    $id=$request->id;
+    $client = Client::find($id);
+
+    // If client with given ID is not found, handle the case
+    if (!$client) {
+        return redirect()->back()->with('error', 'Client not found.');
     }
+
+    // Delete the client
+    $client->delete();
+
+    // Redirect to clients index page with success message
+    return redirect('clients')->with('success', 'Client deleted successfully.');
+}
+
 }
