@@ -1,7 +1,3 @@
-<?php
-use Illuminate\Support\Facades\DB;
-$students= DB::table('students')->get();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +7,6 @@ $students= DB::table('students')->get();
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  
 </head>
 <body>
 
@@ -32,39 +27,25 @@ $students= DB::table('students')->get();
         <th>Edit</th>
         <th>Show</th>
         <th>Delete</th>
-        
       </tr>
     </thead>
     <tbody>
-      <?php
-       foreach ($students as $student)
-       {
-?>
+      @foreach ($students as $student)
       <tr>
-        <td><?php echo $student->studentname ?></td>
-        <td><?php echo$student->age?></td>
-        <td><a href="{{route('editStudent',$student->id)}}">Edit</td>
+        <td>{{ $student->studentname }}</td>
+        <td>{{ $student->age }}</td>
+        <td><a href="{{ route('editStudent', $student->id) }}">Edit</a></td>
         <td><a href="{{ route('showStudent', $student->id) }}">Show</a></td>
         <td>
-    <form id="delete-form-{{$student->id}}" action="{{ route('deleteStudent', $student->id) }}" method="POST" style="display: inline;">
-        <!-- Hidden input field for CSRF protection -->
-        @csrf
-        <!-- HTTP method spoofing for DELETE request -->
-        @method('DELETE')
-        <!-- Delete link -->
-        <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete <?php echo $student->studentname ?>? This action cannot be undone.')) { document.getElementById('delete-form-{{$student->id}}').submit(); }">
-            Delete
-        </a>
-        <!-- Hidden input field to send student ID with the request -->
-        <input type="hidden" value="{{$student->id}}" name="id">
-    </form>
-</td>
-
-        
+          <form id="delete-form-{{ $student->id }}" action="{{ route('deleteStudent', $student->id) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete {{ $student->studentname }}? This action cannot be undone.')) { document.getElementById('delete-form-{{ $student->id }}').submit(); }">Delete</a>
+            <input type="hidden" value="{{ $student->id }}" name="id">
+          </form>
+        </td>
       </tr>
-       <?php
-       }
-       ?>
+      @endforeach
     </tbody>
   </table>
 </div>

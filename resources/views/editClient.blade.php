@@ -1,36 +1,72 @@
-<html>
-  <head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Client</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-  <!--start navigation-->
-   
-   @include('include.nav')
-   
-<!--start navigation-->
-<div class='container' style='margin-left: 30px; '>
-<h2>Edit Client</h2>
 
-<form action="{{ route('updateClient', $client->id)}}" method="post">
-    @csrf
-    @method('put')
-  <label for="fname">client name:</label><br>
-  <input type="text" id="clientname" name="clientname" value="{{$client->clientname}}"><br>
-  <label for="lname">phone:</label><br>
-  <input type="text" id="phone" name="phone" value="{{$client->phone}}"><br><br>
-  <label for="lname">email:</label><br>
-  <input type="text" id="email" name="email" value="{{$client->email}}"><br><br>
-  <label for="lname">website:</label><br>
-  <input type="text" id="website" name="website" value="{{$client->website}}"><br><br>
-  <input type="submit" value="Update">
-  
-    <a href="{{ route('clients') }}"><input type="button" value="Cancel"></a>
-</form> 
+@include('include.nav')
+
+<div class="container form-container">
+    <h2>Edit Client</h2>
+    <form action="{{ route('updateClient', $client->id) }}" method="post">
+        @csrf
+        @method('put')
+
+        <div class="form-group">
+            <label for="clientname">Client Name:</label>
+            <input type="text" class="form-control" id="clientname" name="clientname" value="{{ old('clientname', $client->clientname) }}">
+            @error('clientname')
+                <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $client->phone) }}">
+            @error('phone')
+                <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" name="email" value="{{ old('email', $client->email) }}">
+            @error('email')
+                <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="website">Website:</label>
+            <input type="text" class="form-control" id="website" name="website" value="{{ old('website', $client->website) }}">
+            @error('website')
+                <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{{ route('clients') }}" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
-
 
 </body>
 </html>

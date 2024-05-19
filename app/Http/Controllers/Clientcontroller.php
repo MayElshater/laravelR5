@@ -42,7 +42,13 @@ class Clientcontroller extends Controller
         $client->email = $request->input('email');
         $client->website = $request->input('website');
         $client->save();*/
-        Client::create($request->only($this->columns));
+        $data = $request->validate([
+            'clientname' => 'required|min:3|max:100',
+            'phone' => 'required|max:13',
+            'email'=>'required|email:rfc',
+            'website'=>'required'
+        ]);
+        Client::create($data);
         return redirect('clients');
     }
 
@@ -73,10 +79,17 @@ class Clientcontroller extends Controller
     /**
      * Update the specified resource in storage.
      */
+    /*
     public function update(Request $request, string $id)
     {
         //
         $client = Client::find($id);
+        $data = $request->validate([
+            'clientname' => 'required|min:3|max:100',
+            'phone' => 'required|max:13',
+            'email'=>'required|email:rfc',
+            'website'=>'required'
+        ]);
     
         if (!$client) {
         // Handle case where client with given ID is not found
@@ -85,12 +98,38 @@ class Clientcontroller extends Controller
         }
          
          // Update client attributes
-        $client->update($request->only($this->columns));
+        $client->update($request->only($this->data));
 
         // Redirect to clients index page or any other desired destination
         return redirect('clients')->with('success', 'Client updated successfully.');
 
+    }*/
+    public function update(Request $request, string $id)
+{
+    // Validate the request data
+    $data = $request->validate([
+        'clientname' => 'required|min:3|max:100',
+        'phone' => 'required|max:13|min:11',
+        'email' => 'required|email:rfc',
+        'website' => 'required'
+    ]);
+
+    // Find the client by ID using Eloquent ORM
+    $client = Client::find($id);
+
+    // Check if the client exists
+    if (!$client) {
+        // Handle case where client with given ID is not found
+        return redirect()->back()->with('error', 'Client not found.');
     }
+
+    // Update the client attributes
+    $client->update($data);
+
+    // Redirect to clients index page with success message
+    return redirect('clients')->with('success', 'Client updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -112,5 +151,30 @@ class Clientcontroller extends Controller
     // Redirect to clients index page with success message
     return redirect('clients')->with('success', 'Client deleted successfully.');
 }
+public function trash()
+{
+    // Find the client by ID
+    
+    $trashed = Client::onlyTrashed()->get();
 
+    
+
+    // Redirect to clients index page with success message
+    return view('trashClient',compact('trashed'));
+}
+public function restore(string $id){
+    Client::where('id',$id)->restore();
+    return redirect('clients');
+}
+public function force(Request $request)
+{
+    // Find the student by ID
+    $id = $request->id;
+
+    // Permanently delete the student using query builder
+    DB::table('students')->where('id', $id)->delete();
+
+    // Redirect to trash students page with success message
+    return redirect('trashStudent')->with('success', 'Student deleted permanently.');
+}
 }
