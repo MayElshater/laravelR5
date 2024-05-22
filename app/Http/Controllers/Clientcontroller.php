@@ -32,6 +32,7 @@ class Clientcontroller extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    /*
     public function store(Request $request)
     {
         //
@@ -42,15 +43,50 @@ class Clientcontroller extends Controller
         $client->email = $request->input('email');
         $client->website = $request->input('website');
         $client->save();*/
-        $data = $request->validate([
-            'clientname' => 'required|min:3|max:100',
-            'phone' => 'required|max:13',
-            'email'=>'required|email:rfc',
-            'website'=>'required'
-        ]);
+        //return dd($request->all());
+        
+        /*
+
+        $data = $request->validate($this->validationRules(), $this->errorMessages());
+        $data['active'] = $request->has('active') ? 1 : 0;
+        $imgExt=$request->image->getClientOriginalExtension();
+        $fileName=time() . '.' . $imgExt;
+        $path='assets/images';
+        $request->image->move($path, $fileName);
+        $data['image']=$fileName;
         Client::create($data);
         return redirect('clients');
     }
+    */
+    public function store(Request $request)
+{
+    // Validate the incoming request data with defined rules and error messages
+    $data = $request->validate($this->validationRules(), $this->errorMessages());
+
+    // Set the 'active' attribute based on whether the 'active' checkbox is present in the request
+    $data['active'] = $request->has('active') ? 1 : 0;
+
+    // Process image if provided
+    if ($request->hasFile('image')) {
+        $imgExt = $request->image->getClientOriginalExtension();
+        $fileName = time() . '.' . $imgExt;
+        $path = 'assets/images';
+        $request->image->move(public_path($path), $fileName);
+        $data['image'] = $fileName;
+    } else {
+        // Set the image field to a default image if no image is uploaded
+        $data['image'] = 'Unknown.png'; // Only the filename, as the path is already known
+    }
+
+    // Create a new client record with the validated data
+    Client::create($data);
+
+    // Redirect to the clients index page with a success message
+    return redirect('clients')->with('success', 'Client created successfully.');
+}
+
+    
+
 
     /**
      * Display the specified resource.
@@ -106,21 +142,30 @@ class Clientcontroller extends Controller
     }*/
     public function update(Request $request, string $id)
 {
-    // Validate the request data
-    $data = $request->validate([
-        'clientname' => 'required|min:3|max:100',
-        'phone' => 'required|max:13|min:11',
-        'email' => 'required|email:rfc',
-        'website' => 'required'
-    ]);
+    // Validate the incoming request data with defined rules and error messages
+    $data = $request->validate($this->validationRules(), $this->errorMessages());
 
-    // Find the client by ID using Eloquent ORM
+    // Set the 'active' attribute based on whether the 'active' checkbox is present in the request
+    $data['active'] = $request->has('active') ? 1 : 0;
+
+    // Find the client by ID
     $client = Client::find($id);
 
     // Check if the client exists
     if (!$client) {
-        // Handle case where client with given ID is not found
         return redirect()->back()->with('error', 'Client not found.');
+    }
+
+    // Check if a new image is being uploaded
+    if ($request->hasFile('image')) {
+        $imgExt = $request->image->getClientOriginalExtension();
+        $fileName = time() . '.' . $imgExt;
+        $path = 'assets/images';
+        $request->image->move($path, $fileName);
+        $data['image'] = $fileName;
+    } else {
+        // Remove 'image' from data if no new image is uploaded to prevent overwriting with null
+        unset($data['image']);
     }
 
     // Update the client attributes
@@ -129,6 +174,8 @@ class Clientcontroller extends Controller
     // Redirect to clients index page with success message
     return redirect('clients')->with('success', 'Client updated successfully.');
 }
+
+
 
 
     /**
@@ -177,4 +224,36 @@ public function force(Request $request)
     // Redirect to trash students page with success message
     return redirect('trashStudent')->with('success', 'Student deleted permanently.');
 }
+private function validationRules()
+{
+    return [
+        'clientname' => 'required|min:3|max:100',
+        'phone' => 'required|max:13|min:11',
+        'email' => 'required|email:rfc|unique:clients,email',
+        'website' => 'required|url:http,https',
+        'image' => 'sometimes|nullable|image',
+        'city' => 'required'
+    ];
+}
+
+
+private function errorMessages()
+{
+    return [
+        'clientname.required' => 'The client name is required.',
+        'clientname.min' => 'The client name must be at least 3 characters.',
+        'clientname.max' => 'The client name may not be greater than 100 characters.',
+        'phone.required' => 'The phone number is required.',
+        'phone.max' => 'The phone number may not be greater than 13 characters.',
+        'phone.min' => 'The phone number must be at least 11 characters.',
+        'email.required' => 'The email address is required.',
+        'email.email' => 'The email address must be a valid email.',
+        'email.unique' => 'The email address has already been taken.',
+        'website.required' => 'The website is required.',
+        'website.url' => 'The website must be a valid URL',
+        'city.required' => 'The city is required.',
+        
+    ];
+}
+
 }

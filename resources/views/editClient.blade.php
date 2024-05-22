@@ -27,7 +27,7 @@
 
 <div class="container form-container">
     <h2>Edit Client</h2>
-    <form action="{{ route('updateClient', $client->id) }}" method="post">
+    <form action="{{ route('updateClient', $client->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('put')
 
@@ -61,6 +61,43 @@
             @error('website')
                 <div class="alert alert-danger mt-2">{{ $message }}</div>
             @enderror
+        </div>
+        <div class="form-group">
+    <label for="image">Image:</label>
+    @if($client->image)
+        <img src="{{ asset('assets/images/' . $client->image) }}" alt="Client Image" style="max-width: 200px; margin-bottom: 10px;">
+    @endif
+    <input type="file" id="image" name="image" class="form-control">
+    @error('image')
+        <div class="alert alert-danger mt-2">{{ $message }}</div>
+    @enderror
+    @if($errors->has('image'))
+        <!-- If there was an error, show the file name if it was uploaded -->
+        @if(old('image') && is_object(old('image')) && old('image') instanceof \Illuminate\Http\UploadedFile)
+            <div class="text-muted">Uploaded file: {{ old('image')->getClientOriginalName() }}</div>
+        @endif
+    @endif
+</div>
+
+
+        <div class="form-group">
+            <label for="city">City:</label>
+            <select name="city" id="city" class="form-control">
+               <option value="">Please Select City</option>
+               <option value="Cairo" {{ old('city', $client->city) == 'Cairo' ? 'selected' : '' }}>Cairo</option>
+               <option value="Giza" {{ old('city', $client->city) == 'Giza' ? 'selected' : '' }}>Giza</option>
+               <option value="Alex" {{ old('city', $client->city) == 'Alex' ? 'selected' : '' }}>Alex</option>
+            </select>
+            @error('city')
+                <div class="alert alert-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="active" name="active" {{ old('active', $client->active) ? 'checked' : '' }}>
+                <label class="form-check-label" for="active">Active</label>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>

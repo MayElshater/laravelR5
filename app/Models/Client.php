@@ -13,6 +13,18 @@ class Client extends Model
         'clientname',
         'phone',
         'email',
-        'website'
+        'website',
+        'city',
+        'image',
+        'active'
     ];
+    public function getActiveStatus()
+    {
+        return $this->active ? 'Yes' : 'No';
+    }
+    public function getImagePath()
+    {
+        // Assuming your images are stored in the 'assets/images' directory
+        return asset('assets/images/' . $this->image);
+    }
 }
