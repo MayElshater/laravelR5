@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
 use App\Http\Controllers\Clientcontroller;
 use App\Http\Controllers\Studentcontroller;
+use App\Http\Controllers\TeacherController;
 Route::get("form1",[MyController::class,'info']);
 
 Route::post('insertclient', [Clientcontroller::class,'store'])->name('insertclient');
@@ -28,11 +29,17 @@ Route::get('trashStudent', [Studentcontroller::class, 'trash'])->name('trashStud
 Route::get('restoreStudent/{id?}', [Studentcontroller::class, 'restore'])->name('restoreStudent');
 Route::delete('forceDeleteStudent', [Studentcontroller::class, 'force'])->name('forceDeleteStudent');
 
+Route::get('teachers', [TeacherController::class, 'index'])->name('teachers');
+Route::get('showTeacher/{id}', [TeacherController::class, 'show'])->name('showTeacher');
+Route::get('editTeacher/{id}', [TeacherController::class, 'edit'])->name('editTeacher');
+Route::delete('deleteTeacher/{id}', [TeacherController::class, 'destroy'])->name('deleteTeacher');
+
+
 
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('stacked');
 });
 /*Route::get('May/{id?}', function ($id =0) {
     return ('welcome to the fist page'. $id);
