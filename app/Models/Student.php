@@ -11,7 +11,12 @@ class Student extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'studentname',
-        'age'
+        'age',
+        'teacher_id',
         
     ];
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'student_teacher');
+    }
 }

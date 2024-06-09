@@ -15,6 +15,11 @@ class Teacher extends Model
         'email',
         'no_of_experience',
         'job_title',
+        'student_id',
         
     ];
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_teacher');
+    }
 }

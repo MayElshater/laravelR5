@@ -18,8 +18,8 @@ class Studentcontroller extends Controller
      */
     public function index()
 {
-    // Fetch all non-deleted students
-    $students = DB::table('students')->whereNull('deleted_at')->get();
+    // Fetch all non-deleted students with their related teachers eager loaded
+    $students = Student::with('teachers')->whereNull('deleted_at')->get();
     
     // Pass the students data to the view
     return view('students', ['students' => $students]);
