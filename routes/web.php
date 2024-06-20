@@ -5,11 +5,12 @@ use App\Http\Controllers\MyController;
 use App\Http\Controllers\Clientcontroller;
 use App\Http\Controllers\Studentcontroller;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\ContactUSController;
 Route::get("form1",[MyController::class,'info']);
-
+/*
 Route::post('insertclient', [Clientcontroller::class,'store'])->name('insertclient');
 Route::get('clientForm', [Clientcontroller::class, 'create'])->name('clientForm');
-Route::get('clients', [Clientcontroller::class, 'index'])->name('clients');
+Route::get('clients', [Clientcontroller::class, 'index'])->middleware('verified')->name('clients');
 Route::get('editClient/{id?}', [Clientcontroller::class, 'edit'])->name('editClient');
 Route::put('updateClient/{id?}', [Clientcontroller::class, 'update'])->name('updateClient');
 Route::get('showClient/{id?}', [Clientcontroller::class, 'show'])->name('showClient');
@@ -34,12 +35,19 @@ Route::get('showTeacher/{id}', [TeacherController::class, 'show'])->name('showTe
 Route::get('editTeacher/{id}', [TeacherController::class, 'edit'])->name('editTeacher');
 Route::delete('deleteTeacher/{id}', [TeacherController::class, 'destroy'])->name('deleteTeacher');
 
+Route::get('mysession', [MyController::class, 'myVal']);
+Route::get('oncesession', [MyController::class, 'onceVal']);
+Route::get('restoresession', [MyController::class, 'restoreVal']);
+Route::get('deletesession', [MyController::class, 'deleteVal']);
+Route::get('sendclientmail', [MyController::class, 'sendClientMail']);*/
 
-
-
-
+/*Route::get('contact-us', 'ContactUSController@contactUS');
+Route::post('contact-us', ['as'=>'contactus.store','uses'=>'ContactUSController@contactUSPost']);
+*/
+Route::get('contact-us', [ContactUSController::class, 'contactUS'])->name('contactus.get');
+Route::post('contact-us', [ContactUSController::class, 'contactUSPost'])->name('contactus.store');
 Route::get('/', function () {
-    return view('stacked');
+    return view('welcome');
 });
 /*Route::get('May/{id?}', function ($id =0) {
     return ('welcome to the fist page'. $id);
@@ -79,3 +87,7 @@ Route::post('recform1', function () {
     $lname = request('lname'); 
     return $fname . ' ' . $lname; 
 })->name('receiveform1');
+
+Auth::routes(['verify'=>true]);
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
