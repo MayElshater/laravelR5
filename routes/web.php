@@ -7,7 +7,7 @@ use App\Http\Controllers\Studentcontroller;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ContactUSController;
 Route::get("form1",[MyController::class,'info']);
-/*
+
 Route::post('insertclient', [Clientcontroller::class,'store'])->name('insertclient');
 Route::get('clientForm', [Clientcontroller::class, 'create'])->name('clientForm');
 Route::get('clients', [Clientcontroller::class, 'index'])->middleware('verified')->name('clients');
@@ -18,7 +18,7 @@ Route::delete('deleteClient', [Clientcontroller::class, 'destroy'])->name('delet
 Route::delete('forceDeleteClient', [Clientcontroller::class, 'force'])->name('forceDeleteClient');
 Route::get('trashClient', [Clientcontroller::class, 'trash'])->name('trashClient');
 Route::get('restoreClient/{id?}', [Clientcontroller::class, 'restore'])->name('restoreClient');
-
+/*
 Route::post('insertstudent', [Studentcontroller::class, 'store'])->name('insertstudent');
 Route::get('studentForm', [Studentcontroller::class, 'create'])->name('studentForm');
 Route::get('students', [Studentcontroller::class, 'index'])->name('students');
@@ -44,6 +44,7 @@ Route::get('sendclientmail', [MyController::class, 'sendClientMail']);*/
 /*Route::get('contact-us', 'ContactUSController@contactUS');
 Route::post('contact-us', ['as'=>'contactus.store','uses'=>'ContactUSController@contactUSPost']);
 */
+
 Route::get('contact-us', [ContactUSController::class, 'contactUS'])->name('contactus.get');
 Route::post('contact-us', [ContactUSController::class, 'contactUSPost'])->name('contactus.store');
 Route::get('/', function () {
