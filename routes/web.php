@@ -6,6 +6,11 @@ use App\Http\Controllers\Clientcontroller;
 use App\Http\Controllers\Studentcontroller;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ContactUSController;
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+    ], function(){
 Route::get("form1",[MyController::class,'info']);
 
 Route::post('insertclient', [Clientcontroller::class,'store'])->name('insertclient');
@@ -92,3 +97,4 @@ Route::post('recform1', function () {
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    });
